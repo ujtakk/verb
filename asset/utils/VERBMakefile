@@ -1,0 +1,221 @@
+# -*- makefile -*-
+
+###
+# This is common Makefile for ERB descripted Verilog sources.
+#
+# Include this file and Makefile.dep from normal Makefile.
+###
+
+
+
+###
+# below is the template for dep.in script.
+# write the definition of this macro on Makefile that includes VERBMakefile
+###
+
+#-----------------------------------------------------------
+#define DEP_IN
+### -*- text -*-
+### ignore list
+#
+#ignore_file {
+#}
+#
+#ignore_com {
+#}
+#endef
+#export DEP_IN
+#-----------------------------------------------------------
+
+############################################################
+# Attributes Definition
+############################################################
+
+VERBFILES  = $(wildcard *.v.erb)  $(wildcard test/*.v.erb)
+VHERBFILES = $(wildcard *.vh.erb) $(wildcard test/*.vh.erb)
+VINFILES   = $(wildcard *.v.in)   $(wildcard test/*.v.in)
+
+ifndef SIMULATOR
+SIMULATOR=vsim
+# SIMULATOR=xsim
+# SIMULATOR=vcs
+# SIMULATOR=iverilog
+endif
+
+ifndef VERBOSE
+VERBOSE = 0
+endif
+
+ifndef DIST
+DIST = dist
+endif
+
+ifeq ($(VERBOSE),1)
+  E = @true
+  Q =
+else
+  E = @
+  Q = @
+endif
+
+DEP_RB = ../utils/dep.rb
+ERUBY  = erb -T - $<
+VMODE  = cp $< $@ ; chmod 644 $@ ; \
+         emacs --batch --no-site-file $@ \
+         --eval '(setq make-backup-files nil)' \
+         --eval '(setq large-file-warning-threshold nil)' \
+         -l verilog-mode -f verilog-auto -f save-buffer
+
+V_TARGET    = $(shell echo $* | tac -s/ | head -1 | cut -d. -f1)
+ifeq ($(SIMULATOR),xsim)
+  XVLOG_OPT = -i $(INCLUDE) --verbose 2
+  COMPILE   = xvlog $(XVLOG_OPT) $<
+  XELAB_OPT = -relax -debug typical
+  ELABORATE = xelab $(XELAB_OPT) $(V_TARGET) -s $(V_TARGET)_sim
+  XSIM_OPT  = -R #$(XVLOG_OPT)
+  SIMULATE  = xsim $(V_TARGET)_sim $(XSIM_OPT)
+else
+ifeq ($(SIMULATOR),vsim)
+  VLOG_OPT  = +incdir+$(INCLUDE) -lint
+  COMPILE   = (test -d work || vlib work) \
+           && vlog $(VLOG_OPT) $<
+  VSIM_OPT  = -c -do 'run -all; quit' # $(VLOG_OPT)
+  SIMULATE  = vsim $(V_TARGET) $(VSIM_OPT) | sed 's/^\# //'
+else
+ifeq ($(SIMULATOR),vcs)
+  VCS_OPT   = -full64 +incdir+$(INCLUDE) -R
+  COMPILE   = true $<
+  SIMULATE  = vcs $(VCS_OPT) -o $(V_TARGET).out $*.sv $(SOURCES)
+else
+ifeq ($(SIMULATOR),iverilog)
+  IVER_OPT  = -g2001 -I $(INCLUDE)
+  COMPILE   = true $<
+  SIMULATE  = iverilog $(IVER_OPT) -o $(V_TARGET).out $(VFILES) \
+           && time ./$(V_TARGET).out
+endif
+endif
+endif
+endif
+
+############################################################
+# General Rules
+############################################################
+
+.SUFFIXES: .v .v.in .v.erb .log .vh .vh.erb .com .dot .png
+
+.v.erb.v.in:
+	$(E) echo "  ERUBY (.v.erb)    $<"
+ifeq ($(VERBOSE),1)
+	$(Q) $(ERUBY) > $@
+else
+	$(Q) $(ERUBY) > $@ 2>&1
+endif
+
+.vh.erb.vh:
+	$(E) echo "  ERUBY (.vh.erb)   $<"
+ifeq ($(VERBOSE),1)
+	$(Q) $(ERUBY) 2>&1 | tee $@
+else
+	$(Q) $(ERUBY) > $@ 2>&1
+endif
+
+.v.in.v:
+	$(E) echo "  VMODE (.v.in) (B) $<"
+ifeq ($(VERBOSE),1)
+	$(Q) $(VMODE) 2>&1 | tee $@.log
+else
+	$(Q) $(VMODE) > $@.log 2>&1
+endif
+
+.v.com:
+	$(E) echo "  COMPILE (.v)      $<"
+ifeq ($(VERBOSE),1)
+	$(Q) $(COMPILE) 2>&1 | tee $@
+else
+	$(Q) $(COMPILE) > $@ 2>&1
+endif
+
+.com.log:
+ifeq ($(SIMULATOR),xsim)
+	$(E) echo "  ELABORATE         $(V_TARGET)"
+  ifeq ($(VERBOSE),1)
+		$(Q) $(ELABORATE) 2>&1 | tee $@
+  else
+		$(Q) $(ELABORATE) > $@ 2>&1
+  endif
+	$(E) echo "  SIMULATE          $(V_TARGET)"
+  ifeq ($(VERBOSE),1)
+		$(Q) $(SIMULATE) 2>&1 | tee -a $@
+  else
+		$(Q) $(SIMULATE) >> $@ 2>&1
+  endif
+else
+	$(E) echo "  SIMULATE          $(V_TARGET)"
+  ifeq ($(VERBOSE),1)
+		$(Q) $(SIMULATE) 2>&1 | tee $@
+  else
+		$(Q) $(SIMULATE) 2>&1 | tee $@
+		# $(Q) $(SIMULATE) > $@ 2>&1
+  endif
+endif
+
+.v.dot:
+	./dep.rb --dot $< > $@
+.dot.png:
+	dot -Tpng $< > $@
+.dot.svg:
+	dot -Tsvg $< > $@
+
+Makefile.dep:
+	cat Makefile | grep -v Makefile.dep | $(MAKE) -f - dep.in
+	$(DEP_RB) $(shell echo $(TARGET) | cut -d. -f1) > $@ || rm -f $@
+
+dep.in:
+	echo "$$DEP_IN" > dep.in
+
+.PHONY: clean-common dist
+
+clean-common:
+	rm -f *~ test/*~
+	rm -f *# test/*#
+	rm -f *.com test/*.com
+	rm -f *.log test/*.log
+	rm -f Makefile.dep
+	rm -f dep.in
+
+	### vsim
+	rm -f vsim.wlf transcript
+	rm -f vish_stacktrace.vstf
+	rm -rf work csrc
+
+	### xsim
+	rm -rf xsim.dir
+	rm -f *.jou *.pb
+	rm -f *.wdb
+
+	### vcs
+	rm -f default.cfg vcdplus.vpd vcs.key
+	rm -rf *.daidir
+
+	### iverilog
+	rm -f *.out test/*.out
+
+	rm -f $(VERBFILES:.v.erb=.v)
+	rm -f $(VERBFILES:.v.erb=.v.in)
+	rm -f $(VHERBFILES:.vh.erb=.vh)
+	rm -f $(VINFILES:.v.in=.v)
+
+	rm -f $(LINK_FILES)
+
+$(LINK_FILES):
+	(cd $(LINK_DIR)/ ; $(MAKE) $@)
+	ln -sf $(LINK_DIR)/$@ .
+
+############################################################
+# dist target
+############################################################
+dist:
+	$(MAKE) $(VFILES) $(VHFILES)
+	mkdir -p $(DIST)
+	rsync -L -avz $(VFILES) $(VHFILES) $(DIST)
+

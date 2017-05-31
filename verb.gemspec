@@ -9,15 +9,19 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Takayuki Ujiie"]
   spec.email         = ["takau@easter.kuee.kyoto-u.ac.jp"]
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = "Simple build tool for ERB-described Verilog project"
+  spec.description   = <<~EOS
+    VERB is the simple build tool for ERB-described Verilog project.
+    You can use VERB to initialize ERB-Verilog project,
+    create module and testbench templates, and build the rtl sources.
+  EOS
+  spec.homepage      = "https://github.com/ujtak/verb"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
   if spec.respond_to?(:metadata)
-    spec.metadata['allowed_push_host'] = "TODO: Set to 'http://mygemserver.com'"
+    spec.metadata['allowed_push_host'] = "http://karafuto/gitlab/takau/verb"
   else
     raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
   end
@@ -30,4 +34,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.12"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "minitest", "~> 5.0"
+  spec.add_dependency "thor"
 end

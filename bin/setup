@@ -6,3 +6,5 @@ set -vx
 bundle install
 
 # Do any other automated setup that you need to do here
+rake build
+gem install - pkg/verb-0.1.0.gem -V
