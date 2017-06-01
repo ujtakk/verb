@@ -6,7 +6,7 @@ create module and testbench templates, and build the rtl sources.
 
 ## Installation
 
-First, you have to install `bundle` and `rake` by `gem install bundler rake~.
+First, you have to install `bundle` and `rake` by `gem install bundler rake`.
 (To use `gem` for local install,
 you should setup your own ruby environment using rbenv.)
 
@@ -18,7 +18,7 @@ Or install it yourself as:
 
     $ bundle install
     $ rake build
-    $ gem install - pkg/verb-0.1.0.gem -V
+    $ gem install -l pkg/verb-0.1.0.gem -V
 
 ## Usage
 
