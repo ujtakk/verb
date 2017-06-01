@@ -58,7 +58,7 @@ else
   Q = @
 endif
 
-DEP_RB = ../utils/dep.rb
+DEP_RB = verb dep
 ERUBY  = erb -T - $<
 VMODE  = cp $< $@ ; chmod 644 $@ ; \
          emacs --batch --no-site-file $@ \
@@ -160,7 +160,7 @@ else
 endif
 
 .v.dot:
-	./dep.rb --dot $< > $@
+	$(DEP_RB) --dot $< > $@
 .dot.png:
 	dot -Tpng $< > $@
 .dot.svg:

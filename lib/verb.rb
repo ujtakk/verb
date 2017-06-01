@@ -1,5 +1,6 @@
-require "verb/version"
 require "thor"
+require "verb/version"
+require "verb/gen"
 
 module Verb
   # Your code goes here...
@@ -14,7 +15,8 @@ module Verb
     end
 
     desc "init", "Initialize project"
-    def init
+    def init(name)
+      Verb::Project.start
     end
 
     desc "module", "Generate template of module"

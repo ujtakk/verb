@@ -1,0 +1,42 @@
+<%='% load "parameters.rb"'%>
+
+`timescale 1 ns / 1 ps
+
+module test_<%=name%>;
+`include "parameters.vh"
+
+  /*AUTOREGINPUT*/
+
+  /*AUTOWIRE*/
+
+  //clock
+  always begin
+    clk = 0;
+    #(STEP/2);
+    clk = 1;
+    #(STEP/2);
+  end
+
+  //flow
+  initial begin
+
+    $finish();
+  end
+
+  <%=name%> dut0(/*AUTOINST*/);
+
+  //display
+  always begin
+    #(STEP/2-1);
+    $display(
+      "%d: ", $time/STEP,
+      "| ",
+    );
+    #(STEP/2+1);
+  end
+
+endmodule
+
+// Local Variables:
+// verilog-library-directories:("." "..")
+// End:
