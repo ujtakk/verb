@@ -63,6 +63,7 @@ push git commits and tags, and push the `.gem` file to
 ## Contributing
 
 Bug reports and pull requests are welcome on
+GitHub at https://github.com/ujtak/verb or
 local GitLab at http://karafuto/gitlab/takau/verb.
 
 ## License
