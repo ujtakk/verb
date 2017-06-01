@@ -29,6 +29,11 @@ module Verb
     end
 
     def apply_template
+      unless Dir.pwd =~ /rtl/
+        abort 'ERROR: templates must be generated under the "rtl" dir.'
+      end
+      template "asset/template/template.v.erb", "#{name}.v.erb"
+      template "asset/template/test_template.v.erb", "test/test_#{name}.v.erb"
     end
   end
 end
