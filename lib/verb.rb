@@ -26,7 +26,7 @@ module Verb
 
     desc "dep", "Analyze dependency of sources"
     def dep(*names)
-      system("cat Makefile | grep -v Makefile.dep | make -f - dep.in > /dev/null 2&>1")
+      system("cat Makefile | grep -v Makefile.dep | make -f - dep.in > /dev/null 2>&1")
       Verb::Depend.start
     end
 
