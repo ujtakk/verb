@@ -12,17 +12,39 @@ you should setup your own ruby environment using rbenv.)
 
 And then execute:
 
-    $ ./bin/setup
+  $ ./bin/setup
 
 Or install it yourself as:
 
-    $ bundle install
-    $ rake build
-    $ gem install -l pkg/verb-0.1.0.gem -V
+  $ bundle install
+  $ rake build
+  $ gem install -l pkg/verb-0.1.0.gem -V
 
 ## Usage
 
-TODO: Write usage instructions here
+Start your project by setting up VERB project templates:
+
+  $ verb init <project name>
+
+Then, you can create RTL sources in the `rtl` sub-directory by:
+
+  $ verb new <module name>
+
+`new` command also create the testbench template in `test` sub-directory.
+
+To build RTL sources, VERB simply uses Make as aliased sub-command like:
+
+  $ verb (build)  # same as `make`
+
+  $ verb test     # same as `make test`
+
+  $ verb dist     # same as `make dist`
+
+
+
+Project template also provides sample Vivado tcl scripts.
+
+These tcl scripts have to be modified for fitting your project.
 
 ## Development
 
