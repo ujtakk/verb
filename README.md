@@ -6,19 +6,19 @@ create module and testbench templates, and build the rtl sources.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'verb'
-```
+First, you have to install `bundle` and `rake` by `gem install bundler rake~.
+(To use `gem` for local install,
+you should setup your own ruby environment using rbenv.)
 
 And then execute:
 
-    $ bundle
+    $ ./bin/setup
 
 Or install it yourself as:
 
-    $ gem install verb
+    $ bundle install
+    $ rake build
+    $ gem install - pkg/verb-0.1.0.gem -V
 
 ## Usage
 
@@ -41,7 +41,6 @@ push git commits and tags, and push the `.gem` file to
 ## Contributing
 
 Bug reports and pull requests are welcome on
-GitHub at https://github.com/ujtak/verb or
 local GitLab at http://karafuto/gitlab/takau/verb.
 
 ## License

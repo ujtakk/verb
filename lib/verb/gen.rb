@@ -17,4 +17,18 @@ module Verb
       create_link "#{name}/rtl/test", "../test"
     end
   end
+
+  class Template < Thor::Group
+    include Thor::Actions
+
+    argument :command
+    argument :name
+
+    def self.source_root
+      File.expand_path("../../../", __FILE__)
+    end
+
+    def apply_template
+    end
+  end
 end
