@@ -22,7 +22,29 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Start your project by setting up VERB project templates:
+
+    $ verb init <project name>
+
+Then, you can create RTL sources in the `rtl` sub-directory by:
+
+    $ verb new <module name>
+
+`new` command also create the testbench template in `test` sub-directory.
+
+To build RTL sources, VERB simply uses Make as aliased sub-command like:
+
+    $ verb (build)  # same as `make`
+
+    $ verb test     # same as `make test`
+
+    $ verb dist     # same as `make dist`
+
+
+
+Project template also provides sample Vivado tcl scripts.
+
+These tcl scripts have to be modified for fitting your project.
 
 ## Development
 
@@ -41,6 +63,7 @@ push git commits and tags, and push the `.gem` file to
 ## Contributing
 
 Bug reports and pull requests are welcome on
+GitHub at https://github.com/ujtak/verb or
 local GitLab at http://karafuto/gitlab/takau/verb.
 
 ## License
