@@ -13,6 +13,7 @@ module Verb
 
     def create_project
       directory "asset", name, :exclude_pattern => /template/
+      template "asset/template/README.md.erb", "README.md"
       empty_directory "#{name}/test"
       create_link "#{name}/rtl/test", "../test"
     end

@@ -108,16 +108,8 @@ update_ip_catalog -rebuild
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
 set files [list \
- "[file normalize "$origin_dir/../dist/parameters.vh"]"\
- "[file normalize "$origin_dir/../dist/s_axi_lite.v"]"\
- "[file normalize "$origin_dir/../dist/m_axi_lite.v"]"\
- "[file normalize "$origin_dir/../dist/s_axi.v"]"\
- "[file normalize "$origin_dir/../dist/memory.v"]"\
- "[file normalize "$origin_dir/../dist/m_axi.v"]"\
- "[file normalize "$origin_dir/../dist/s_axi_stream.v"]"\
- "[file normalize "$origin_dir/../dist/buffer.v"]"\
- "[file normalize "$origin_dir/../dist/m_axi_stream.v"]"\
- "[file normalize "$origin_dir/../dist/axi_top.v"]"\
+ "[file normalize [glob -dir $origin_dir/../dist *.vh]]"\
+ "[file normalize [glob -dir $origin_dir/../dist *.v]]"\
  "[file normalize "$origin_dir/../dist/component.xml"]"\
 ]
 add_files -norecurse -fileset $obj $files
