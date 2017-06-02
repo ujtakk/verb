@@ -1,7 +1,7 @@
 VERBOSE   = 0
 SIMULATOR = vsim
-MODULE    = top.v.erb
-TARGET    = test/test_$(MODULE)
+MODULE    = top
+TARGET    = test/test_$(MODULE).v.erb
 INCLUDE   =
 
 LINK_DIR  = .

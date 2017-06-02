@@ -1,6 +1,6 @@
 # Verb
 
-VERB is the simple build tool for ERB-described Verilog project.
+VERB is the simple build tool for ERB-described Verilog project (with verilog-auto).
 You can use VERB to initialize ERB-Verilog project,
 create module and testbench templates, and build the rtl sources.
 
